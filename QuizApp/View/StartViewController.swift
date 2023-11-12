@@ -37,7 +37,7 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
 
     }
     
-    
+    //Categories are shown with UIPicker
     @IBAction func categoryButton(_ sender: UIButton) {
         view.endEditing(true)
         
@@ -56,50 +56,49 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
-        
         present(alertController, animated: true, completion: nil)
         
     }
     
     
     
-    //Since some of the difficulty levels do not exist in the api, "" is written.
+    //Since some of the difficulty levels do not exist in the api, some of difficulties is written same and some is written ""
     @IBAction func difficultyButton(_ sender: Any) {
         
         switch categoryNumber {
             
         case "9":
-            chooseDifficulty(easy: "easy", medium: "medium", hard: "")
+            chooseDifficulty(easy: "easy", medium: "medium", hard: "medium")
             
         case "11":
-            chooseDifficulty(easy: "easy", medium: "", hard: "")
+            chooseDifficulty(easy: "easy", medium: "easy", hard: "easy")
             
         case "12":
-            chooseDifficulty(easy: "easy", medium: "medium", hard: "")
+            chooseDifficulty(easy: "easy", medium: "medium", hard: "medium")
             
         case "14":
-            chooseDifficulty(easy: "", medium: "medium", hard: "")
+            chooseDifficulty(easy: "medium", medium: "medium", hard: "medium")
             
         case "15":
             chooseDifficulty(easy: "easy", medium: "medium", hard: "hard")
             
         case "17":
-            chooseDifficulty(easy: "easy", medium: "medium", hard: "")
+            chooseDifficulty(easy: "easy", medium: "medium", hard: "medium")
             
         case "21":
             chooseDifficulty(easy: "", medium: "", hard: "")
             
         case "22":
-            chooseDifficulty(easy: "easy", medium: "medium", hard: "")
+            chooseDifficulty(easy: "easy", medium: "medium", hard: "medium")
             
         case "23":
-            chooseDifficulty(easy: "easy", medium: "medium", hard: "")
+            chooseDifficulty(easy: "easy", medium: "medium", hard: "medium")
             
         case "20":
             chooseDifficulty(easy: "", medium: "", hard: "")
             
         case "27":
-            chooseDifficulty(easy: "easy", medium: "", hard: "")
+            chooseDifficulty(easy: "easy", medium: "easy", hard: "easy")
             
         default:
             self.alertMessage(title: "Error!", message: "Please select category first!")
@@ -108,7 +107,7 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     }
     
     
-    //pop-up menu for the difficulty
+    //pop-up menu for the difficulty selection
     func chooseDifficulty(easy: String, medium: String, hard: String) {
 
         let easy = UIAction(title: "Easy") { _ in
@@ -130,6 +129,7 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         
         buttonDifficulty.menu = menu
         buttonDifficulty.showsMenuAsPrimaryAction = true
+        
         
     }
 

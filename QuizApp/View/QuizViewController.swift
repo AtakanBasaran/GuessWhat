@@ -22,6 +22,8 @@ class QuizViewController: UIViewController {
     var quiz: [[String]] = [[]]
     var score = 0
     var progressNumber = 0.0 //For progressBar
+    var newCategory = ""
+    var textStatus = Bool()
 
 
     override func viewDidLoad() {
@@ -52,17 +54,27 @@ class QuizViewController: UIViewController {
         let difficultyNew = difficulty.first ?? "" //removing [] and ""
         let categoryNew = category.first ?? ""
         
+        //Some category names are Entertainment: Film etc. The "Entertainment:" is removed
+        let components = categoryNew.components(separatedBy: ":")
+        if components.count >= 2 {
+            newCategory = components[1...].joined(separator: ":").trimmingCharacters(in: .whitespaces)
+            textStatus = true
+        } else {
+            textStatus = false
+        }
+
+        
         let categoryLabel = UILabel()
-        categoryLabel.text = "\(categoryNew)"
+        categoryLabel.text = textStatus ? "\(newCategory)" : "\(categoryNew)"
         categoryLabel.textColor = .white
-        categoryLabel.font = .boldSystemFont(ofSize: 18)
+        categoryLabel.font = .boldSystemFont(ofSize: 20)
         categoryLabel.sizeToFit()
         self.navigationItem.titleView = categoryLabel
         
         let difficultyLabel = UILabel()
         difficultyLabel.text = "\(difficultyNew.capitalized(with: Locale.current))"
         difficultyLabel.textColor = .white
-        difficultyLabel.font = .boldSystemFont(ofSize: 18)
+        difficultyLabel.font = .boldSystemFont(ofSize: 20)
         
         let barButonLabel = UIBarButtonItem(customView: difficultyLabel)
         self.navigationItem.rightBarButtonItem = barButonLabel
@@ -81,41 +93,38 @@ class QuizViewController: UIViewController {
     
 
     @IBAction func answerButton(_ sender: UIButton) {
-        numberQuestion += 1
-        progressNumber += 0.1
+        // Answering correct or false
+           if sender.currentTitle == quiz[numberQuestion][1] {
+               score += 1
+               scoreLabel.text = "Score: \(score)"
+               showResultLabel(isCorrect: true)
+           } else {
+               showResultLabel(isCorrect: false)
+           }
+           
+           numberQuestion += 1
+           progressNumber += 0.1
 
-        if numberQuestion == 10 {
-            questionNumber.text = "Q: \(numberQuestion)"
-            questionText.textAlignment = .center
-            questionText.text = "Game Over"
-            scoreLabel.text = "Score: \(score)"
-            buttonTrue.isHidden = true
-            buttonFalse.isHidden = true
-            rePlay.isHidden = false
-            progressBar.progress = Float(progressNumber)
-
-        } else {
-            let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
-            let newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
-            questionText.text = newSentence
-            questionText.textAlignment = .left
-            progressBar.progress = Float(progressNumber)
-            questionNumber.text = "Q: \(numberQuestion + 1)"
-
-
-            //Answering correct or false
-            if sender.currentTitle == quiz[numberQuestion][1] {
-                score += 1
-                scoreLabel.text = "Score: \(score)"
-                showResultLabel(isCorrect: true)
-                
-            } else {
-                showResultLabel(isCorrect: false)
-            }
-        }
-    }
+           if numberQuestion == 10 {
+               questionNumber.text = "Q: \(numberQuestion)"
+               questionText.textAlignment = .center
+               questionText.text = "Game Over"
+               scoreLabel.text = "Score: \(score)"
+               buttonTrue.isHidden = true
+               buttonFalse.isHidden = true
+               rePlay.isHidden = false
+               progressBar.progress = Float(progressNumber)
+           } else {
+               let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
+               let newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
+               questionText.text = newSentence
+               questionText.textAlignment = .left
+               progressBar.progress = Float(progressNumber)
+               questionNumber.text = "Q: \(numberQuestion + 1)"
+           }
+       }
     
-    //Resetting the game
+    //Reset the game
     @IBAction func playAgain(_ sender: Any) {
         
         buttonTrue.isHidden = false
@@ -139,7 +148,7 @@ class QuizViewController: UIViewController {
     func showResultLabel(isCorrect: Bool) {
         
         let resultLabel = UILabel()
-        resultLabel.font = .boldSystemFont(ofSize: 21)
+        resultLabel.font = .boldSystemFont(ofSize: 22)
         resultLabel.textAlignment = .center
         resultLabel.textColor = isCorrect ? .green : .red
         resultLabel.text = isCorrect ? "Correct!" : "Wrong!"
@@ -147,7 +156,7 @@ class QuizViewController: UIViewController {
         view.addSubview(resultLabel)
         resultLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        let yOffset: CGFloat = 50.0 //50 pixels below the center
+        let yOffset: CGFloat = 28.0 //50 pixels below the center
         NSLayoutConstraint.activate([
             resultLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             resultLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: yOffset)
