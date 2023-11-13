@@ -11,6 +11,7 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     
     @IBOutlet weak var buttonCategory: UIButton!
     @IBOutlet weak var buttonDifficulty: UIButton!
+    @IBOutlet weak var buttonStart: UIButton!
     
     
     var categoryNumber = ""
@@ -33,13 +34,18 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        buttonStart.isEnabled = true
 
+
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        buttonStart.isEnabled = true
 
     }
     
     //Categories are shown with UIPicker
     @IBAction func categoryButton(_ sender: UIButton) {
-        view.endEditing(true)
         
         let alertController = UIAlertController(title: "\n\n\n\n\n\n\n\n\n", message: nil, preferredStyle: .actionSheet)
         let pickerView = UIPickerView(frame: CGRect(x: 0, y: 0, width: alertController.view.bounds.width - 16, height: 200))
@@ -137,6 +143,8 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
 
     //Start the game
     @IBAction func startButton(_ sender: Any) {
+        
+        buttonStart.isEnabled = false //Cannot be tapped twice
         
         if categoryNumber == "" {
             alertMessage(title: "Error!", message: "Please select category and difficulty!")

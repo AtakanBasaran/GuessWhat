@@ -90,6 +90,7 @@
                     <connections>
                         <outlet property="buttonCategory" destination="2h6-SI-qyV" id="5CB-w2-kVV"/>
                         <outlet property="buttonDifficulty" destination="Wn6-LJ-pO0" id="0m6-OC-h0a"/>
+                        <outlet property="buttonStart" destination="eph-g4-Kcq" id="SmR-FR-cKg"/>
                         <segue destination="ruM-Bm-yjQ" kind="show" identifier="toQuizVC" id="sUx-fU-9hP"/>
                     </connections>
                 </viewController>
