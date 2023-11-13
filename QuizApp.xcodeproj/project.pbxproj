@@ -343,7 +343,7 @@
 				DEVELOPMENT_TEAM = 27JCDAS664;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = QuizApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = QuizTime;
+				INFOPLIST_KEY_CFBundleDisplayName = GuessWhat;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -373,7 +373,7 @@
 				DEVELOPMENT_TEAM = 27JCDAS664;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = QuizApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = QuizTime;
+				INFOPLIST_KEY_CFBundleDisplayName = GuessWhat;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
