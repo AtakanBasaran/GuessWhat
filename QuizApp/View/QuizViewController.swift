@@ -98,8 +98,21 @@ class QuizViewController: UIViewController {
                score += 1
                scoreLabel.text = "Score: \(score)"
                showResultLabel(isCorrect: true)
+               
+               if quiz[numberQuestion][1] == "True" { //Setting title color green for the right answer
+                   buttonTrue.setTitleColor(.green, for: .normal)
+               } else {
+                   buttonFalse.setTitleColor(.green, for: .normal)
+               }
+    
            } else {
                showResultLabel(isCorrect: false)
+               
+               if quiz[numberQuestion][1] == "True" {
+                   buttonTrue.setTitleColor(.green, for: .normal)
+               } else {
+                   buttonFalse.setTitleColor(.green, for: .normal)
+               }
            }
            
            numberQuestion += 1
@@ -114,6 +127,12 @@ class QuizViewController: UIViewController {
                buttonFalse.isHidden = true
                rePlay.isHidden = false
                progressBar.progress = Float(progressNumber)
+               
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //Clearing the title color for both button for the next question
+                   self.buttonTrue.setTitleColor(.white, for: .normal)
+                   self.buttonFalse.setTitleColor(.white, for: .normal)
+               }
+               
            } else {
                let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
                let newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
@@ -121,6 +140,14 @@ class QuizViewController: UIViewController {
                questionText.textAlignment = .left
                progressBar.progress = Float(progressNumber)
                questionNumber.text = "Q: \(numberQuestion + 1)"
+               
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //clear the title color for the next question
+                   self.buttonTrue.setTitleColor(.white, for: .normal)
+                   self.buttonFalse.setTitleColor(.white, for: .normal)
+               }
+               
+               
+               
            }
        }
     
@@ -163,8 +190,8 @@ class QuizViewController: UIViewController {
         ])
         
         //Duration of the animation
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            UIView.animate(withDuration: 0.30, animations: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            UIView.animate(withDuration: 0.40, animations: {
                 resultLabel.alpha = 0
             }, completion: { _ in
                 resultLabel.removeFromSuperview()

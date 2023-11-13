@@ -25,12 +25,12 @@
                                     <constraint firstAttribute="height" constant="73" id="WIy-VZ-ePa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.14509803921568626" green="0.17254901960784313" blue="0.29019607843137252" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="xba-UQ-b5S" firstAttribute="centerX" secondItem="GF3-01-sKb" secondAttribute="centerX" id="2d2-Kr-xOb"/>
                             <constraint firstItem="xba-UQ-b5S" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="JP4-R2-IVq"/>
