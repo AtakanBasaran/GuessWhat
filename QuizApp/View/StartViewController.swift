@@ -164,9 +164,7 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
                         print("Server Error")
                     }
                 case .success(let listQuestion):
-                    print("Received questions: \(listQuestion.results.count)")
                     self.questionList = listQuestion.results.map { data in
-                        print("Number of questions: \(self.questionList.count)")
                         return QuestionViewModelItem(
                             category: data.category,
                             difficulty: data.difficulty.rawValue,
@@ -180,7 +178,6 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
                         
                         DispatchQueue.main.async {
                             self.questionViewModel.getQuizList(quizList: self.questionList)
-                            print("Setting quiz data in QuestionViewModel")
                             self.performSegue(withIdentifier: "toQuizVC", sender: nil)
                         }
                     } else {
@@ -188,6 +185,14 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
                         
                     }
                 }
+            }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toQuizVC" {
+            if let quizViewController = segue.destination as? QuizViewController {
+                quizViewController.questionViewModel = self.questionViewModel
             }
         }
     }

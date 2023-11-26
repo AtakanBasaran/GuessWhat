@@ -41,40 +41,31 @@ class QuizViewController: UIViewController {
         
         let barButonLabel = UIBarButtonItem(customView: difficultyLabel)
         self.navigationItem.rightBarButtonItem = barButonLabel
-
-        questionText.text = questionViewModel.getQuestion()
+        
+        questionViewModel.updateSentence()
+        uptadeUI()
         questionText.textAlignment = .left
         
-        progressBar.progress = questionViewModel.getProgress()
-        questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
-        
-        scoreLabel.text = "Score: \(questionViewModel.getScore())"
-        
-        print(questionViewModel.getCategory())
-        print(questionViewModel.getDifficulty())
-        print(questionViewModel.getQuestion())
-        print(questionViewModel.getQuestionNo())
 
-
-        
     }
     
     
     @IBAction func answerButton(_ sender: UIButton) {
-        // Answering correct or false
         
+        // Answering correct or false
         if let playerAnswer = sender.currentTitle {
             let boolAnswer = questionViewModel.checkAnswer(playerAnswer: playerAnswer)
             if boolAnswer == true {
-                sender.tintColor = .green
+                sender.setTitleColor(.green, for: .normal)
                 showResultLabel(isCorrect: true)
                 scoreLabel.text = "Score: \(questionViewModel.getScore())"
             } else {
                 showResultLabel(isCorrect: false)
-                sender.tintColor = .red
+                sender.setTitleColor(.red, for: .normal)
             }
         }
         
+        //Next Question
         let boolQuestion = questionViewModel.nextQuestion()
         
         if boolQuestion == true {
@@ -83,10 +74,10 @@ class QuizViewController: UIViewController {
             progressBar.progress = questionViewModel.getProgress()
             questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //clear the title color for the next question
-                sender.tintColor = .white
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { //clear the title color for the next question
+                sender.setTitleColor(.white, for: .normal)
             }
-        } else {
+        } else { //After last question
             questionNumber.text = "Q: \(questionViewModel.getQuestionNo())"
             questionText.textAlignment = .center
             questionText.text = "Game Over"
@@ -94,12 +85,20 @@ class QuizViewController: UIViewController {
             buttonTrue.isHidden = true
             buttonFalse.isHidden = true
             rePlay.isHidden = false
-            progressBar.progress = questionViewModel.getProgress()
+            progressBar.progress = 0
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //clear the title color for the next question
-                sender.tintColor = .white
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { //clear the title color for the next question
+                sender.setTitleColor(.white, for: .normal)
             }
         }
+    }
+    
+    func uptadeUI() {
+        progressBar.progress = questionViewModel.getProgress()
+        questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
+        questionText.text = questionViewModel.getQuestion()
+        scoreLabel.text = "Score: \(questionViewModel.getScore())"
+ 
     }
     
     //Reset the game
@@ -110,14 +109,9 @@ class QuizViewController: UIViewController {
         buttonTrue.isHidden = false
         buttonFalse.isHidden = false
         rePlay.isHidden = true
-       
-        progressBar.progress = questionViewModel.getProgress()
-        questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
-        
-        questionText.text = questionViewModel.getQuestion()
+        uptadeUI()
         questionText.textAlignment = .left
         
-        scoreLabel.text = "Score: \(questionViewModel.getScore())"
         
     }
     

@@ -43,7 +43,6 @@ struct QuestionViewModel {
             [questionArray[8], answerArray[8]],
             [questionArray[9], answerArray[9]]
         ]
-        print("Number of quiz items: \(quiz.count)")
 
         
         let difficulty = Set(quizList.map {$0.difficulty}) //Mapping to get difficulty level from whole data
@@ -51,16 +50,11 @@ struct QuestionViewModel {
         
         let category = Set(quizList.map {$0.category})  //Mapping to get catefgory from whole data
         categoryNew = category.first ?? ""
-        
-        //Fixing api data
-        let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
-        newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
 
- 
     }
     
     func getDifficulty() -> String {
-        return difficultyNew.capitalized(with: Locale.current)
+        return difficultyNew.capitalized(with: Locale.current) //Uppercase of the first latter
     }
     
     //Some category names are Entertainment: Film etc. The "Entertainment:" is removed
@@ -74,6 +68,12 @@ struct QuestionViewModel {
             return categoryNew
         }
     }
+    
+    //Fixing api data
+     mutating func updateSentence() {
+        let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
+        newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
+        }
     
     func getQuestion() -> String {
         return newSentence
@@ -90,6 +90,7 @@ struct QuestionViewModel {
         } else {
             return false
         }
+        
      
     }
     
@@ -98,18 +99,21 @@ struct QuestionViewModel {
     }
     
     func getProgress() -> Float {
-        return Float(numberQuestion) / Float(quiz.count)
+        return Float(numberQuestion + 1) / Float(quiz.count)
     }
     
     mutating func nextQuestion() -> Bool {
        
        if numberQuestion + 1 < quiz.count {
            numberQuestion += 1
+           updateSentence()
            return true
        } else {
            numberQuestion = 0
+           updateSentence()
            return false
        }
+        
    }
     
     func getQuestionNo() -> Int {
