@@ -17,78 +17,45 @@ class QuizViewController: UIViewController {
     @IBOutlet weak var rePlay: UIButton!
     @IBOutlet weak var questionNumber: UILabel!
     
-    var quizList =  [QuestionViewModelItem]()
-    var numberQuestion = 0
-    var quiz: [[String]] = [[]]
-    var score = 0
-    var progressNumber = 0.0 //For progressBar
-    var newCategory = ""
-    var textStatus = Bool()
+
+    var questionViewModel = QuestionViewModel()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         rePlay.isHidden = true
-        
-        let questionArray = quizList.map {$0.question} //mapping to only get questions from whole data
-        let answerArray = quizList.map {$0.correctAnswer} //mapping to only get answers from whole data
-        //creating 2D array to paire questions and its answers
-        quiz = [
-            [questionArray[0], answerArray[0]],
-            [questionArray[1], answerArray[1]],
-            [questionArray[2], answerArray[2]],
-            [questionArray[3], answerArray[3]],
-            [questionArray[4], answerArray[4]],
-            [questionArray[5], answerArray[5]],
-            [questionArray[6], answerArray[6]],
-            [questionArray[7], answerArray[7]],
-            [questionArray[8], answerArray[8]],
-            [questionArray[9], answerArray[9]]
-        ]
-        
-        
-        
-        let difficulty = Set(quizList.map {$0.difficulty}) //Mapping to get difficulty level from whole data
-        let category = Set(quizList.map {$0.category})  //Mapping to get catefgory from whole data
-        
-        let difficultyNew = difficulty.first ?? "" //removing [] and ""
-        let categoryNew = category.first ?? ""
-        
-        //Some category names are Entertainment: Film etc. The "Entertainment:" is removed
-        let components = categoryNew.components(separatedBy: ":")
-        if components.count >= 2 {
-            newCategory = components[1...].joined(separator: ":").trimmingCharacters(in: .whitespaces)
-            textStatus = true
-        } else {
-            textStatus = false
-        }
-        
+   
         
         let categoryLabel = UILabel()
-        categoryLabel.text = textStatus ? "\(newCategory)" : "\(categoryNew)"
+        categoryLabel.text = questionViewModel.getCategory()
         categoryLabel.textColor = .white
         categoryLabel.font = .boldSystemFont(ofSize: 20)
         categoryLabel.sizeToFit()
         self.navigationItem.titleView = categoryLabel
         
         let difficultyLabel = UILabel()
-        difficultyLabel.text = "\(difficultyNew.capitalized(with: Locale.current))"
+        difficultyLabel.text = questionViewModel.getDifficulty()
         difficultyLabel.textColor = .white
         difficultyLabel.font = .boldSystemFont(ofSize: 20)
         
         let barButonLabel = UIBarButtonItem(customView: difficultyLabel)
         self.navigationItem.rightBarButtonItem = barButonLabel
-        
-        //Fixing api data
-        let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
-        let newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
-        questionText.text = newSentence
+
+        questionText.text = questionViewModel.getQuestion()
         questionText.textAlignment = .left
-        progressBar.progress = Float(progressNumber)
-        questionNumber.text = "Q: \(numberQuestion + 1)"
         
-        scoreLabel.text = "Score: \(score)"
+        progressBar.progress = questionViewModel.getProgress()
+        questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
+        
+        scoreLabel.text = "Score: \(questionViewModel.getScore())"
+        
+        print(questionViewModel.getCategory())
+        print(questionViewModel.getDifficulty())
+        print(questionViewModel.getQuestion())
+        print(questionViewModel.getQuestionNo())
+
+
         
     }
     
@@ -96,85 +63,61 @@ class QuizViewController: UIViewController {
     @IBAction func answerButton(_ sender: UIButton) {
         // Answering correct or false
         
-        let rightAnswer = quiz[numberQuestion][1]
-        let playerAnswer = sender.currentTitle
-        
-        if playerAnswer == rightAnswer {
-            score += 1
-            scoreLabel.text = "Score: \(score)"
-            showResultLabel(isCorrect: true)
-            
-            if rightAnswer == "True" { //Setting title color green for the right answer
-                buttonTrue.setTitleColor(.green, for: .normal)
+        if let playerAnswer = sender.currentTitle {
+            let boolAnswer = questionViewModel.checkAnswer(playerAnswer: playerAnswer)
+            if boolAnswer == true {
+                sender.tintColor = .green
+                showResultLabel(isCorrect: true)
+                scoreLabel.text = "Score: \(questionViewModel.getScore())"
             } else {
-                buttonFalse.setTitleColor(.green, for: .normal)
-            }
-            
-        } else {
-            showResultLabel(isCorrect: false)
-            
-            if rightAnswer == "True" {
-                buttonTrue.setTitleColor(.green, for: .normal)
-            } else {
-                buttonFalse.setTitleColor(.green, for: .normal)
+                showResultLabel(isCorrect: false)
+                sender.tintColor = .red
             }
         }
         
-        numberQuestion += 1
-        progressNumber += 0.1 // -> (numberQuestion / quiz.count)
+        let boolQuestion = questionViewModel.nextQuestion()
         
-        if numberQuestion == quiz.count {
-            questionNumber.text = "Q: \(numberQuestion)"
+        if boolQuestion == true {
+            questionText.text = questionViewModel.getQuestion()
+            questionText.textAlignment = .left
+            progressBar.progress = questionViewModel.getProgress()
+            questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //clear the title color for the next question
+                sender.tintColor = .white
+            }
+        } else {
+            questionNumber.text = "Q: \(questionViewModel.getQuestionNo())"
             questionText.textAlignment = .center
             questionText.text = "Game Over"
-            scoreLabel.text = "Score: \(score)"
+            scoreLabel.text = "Score: \(questionViewModel.getScore())"
             buttonTrue.isHidden = true
             buttonFalse.isHidden = true
             rePlay.isHidden = false
-            progressBar.progress = Float(progressNumber)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //Clearing the title color for both button for the next question
-                self.buttonTrue.setTitleColor(.white, for: .normal)
-                self.buttonFalse.setTitleColor(.white, for: .normal)
-            }
-            
-        } else {
-            let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
-            let newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
-            questionText.text = newSentence
-            questionText.textAlignment = .left
-            progressBar.progress = Float(progressNumber)
-            questionNumber.text = "Q: \(numberQuestion + 1)"
+            progressBar.progress = questionViewModel.getProgress()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { //clear the title color for the next question
-                self.buttonTrue.setTitleColor(.white, for: .normal)
-                self.buttonFalse.setTitleColor(.white, for: .normal)
+                sender.tintColor = .white
             }
-            
-            
-            
         }
     }
     
     //Reset the game
     @IBAction func playAgain(_ sender: Any) {
         
+        questionViewModel.playAgain()
+        
         buttonTrue.isHidden = false
         buttonFalse.isHidden = false
         rePlay.isHidden = true
-        numberQuestion = 0
-        score = 0
-        progressNumber = 0.0
+       
+        progressBar.progress = questionViewModel.getProgress()
+        questionNumber.text = "Q: \(questionViewModel.getQuestionNo() + 1)"
         
-        progressBar.progress = Float(progressNumber)
-        questionNumber.text = "Q: \(numberQuestion + 1)"
-        
-        let sentence = quiz[numberQuestion][0].replacingOccurrences(of: "&quot;", with: "\"")
-        let newSentence = sentence.replacingOccurrences(of: "&#039;", with: "'")
-        questionText.text = newSentence
+        questionText.text = questionViewModel.getQuestion()
         questionText.textAlignment = .left
         
-        scoreLabel.text = "Score: \(score)"
+        scoreLabel.text = "Score: \(questionViewModel.getScore())"
         
     }
     

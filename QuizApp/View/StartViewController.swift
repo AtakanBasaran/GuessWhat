@@ -13,7 +13,7 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     @IBOutlet weak var buttonDifficulty: UIButton!
     @IBOutlet weak var buttonStart: UIButton!
     
-    
+    var questionViewModel = QuestionViewModel()
     var categoryNumber = ""
     var difficulty = ""
     var questionList =  [QuestionViewModelItem]()
@@ -164,16 +164,23 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
                         print("Server Error")
                     }
                 case .success(let listQuestion):
+                    print("Received questions: \(listQuestion.results.count)")
                     self.questionList = listQuestion.results.map { data in
+                        print("Number of questions: \(self.questionList.count)")
                         return QuestionViewModelItem(
                             category: data.category,
                             difficulty: data.difficulty.rawValue,
                             question: data.question,
                             correctAnswer: data.correctAnswer.rawValue
+                            
                         )
+                        
                     }
                     if self.questionList.count > 0 {
+                        
                         DispatchQueue.main.async {
+                            self.questionViewModel.getQuizList(quizList: self.questionList)
+                            print("Setting quiz data in QuestionViewModel")
                             self.performSegue(withIdentifier: "toQuizVC", sender: nil)
                         }
                     } else {
@@ -185,13 +192,6 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toQuizVC" {
-            let destinationVC = segue.destination as! QuizViewController
-            destinationVC.quizList = self.questionList
-        }
-        
-    }
     
     
     func alertMessage(title: String, message: String) {
@@ -214,5 +214,8 @@ class StartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return categories[row][0]
     }
+    
+    
+    
 
 }
